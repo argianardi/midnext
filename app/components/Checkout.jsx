@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
+import { product } from '../libs/product';
 
 const Checkout = () => {
   const [quantity, setQuantity] = useState(1);
@@ -12,11 +13,24 @@ const Checkout = () => {
   };
 
   const checkout = async () => {
-    alert("Checkout SNAP! 🌟")
+    const data = {
+      id: product?.id,
+      productName: product?.name,
+      price: product?.price,
+      quantity: quantity,
+    };
+
+    const response = await fetch('/api/tokenizer', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+
+    const requestData = await response?.json();
+    window.snap.pay(requestData?.token);
   };
 
   const generatePaymentLink = async () => {
-    alert("Checkout Payment Link! 🔥")
+    alert('Checkout Payment Link! 🔥');
   };
 
   return (
@@ -30,14 +44,15 @@ const Checkout = () => {
             ➖
           </button>
 
-          <input
-            type="number"
-            id="quantity"
-            value={quantity}
-            className="h-10 w-16 text-black border-transparent text-center"
-            onChange={quantity}
-          />
-
+          <p
+            // type="number"
+            // id="quantity"
+            // value={quantity}
+            className="w-16 h-10 text-center text-black border-transparent"
+            // onChange={quantity}
+          >
+            {quantity}
+          </p>
           <button
             className="transition-all hover:opacity-75"
             onClick={increaseQuantity}
@@ -46,14 +61,14 @@ const Checkout = () => {
           </button>
         </div>
         <button
-          className="rounded bg-indigo-500 p-4 text-sm font-medium transition hover:scale-105"
+          className="p-4 text-sm font-medium transition bg-indigo-500 rounded hover:scale-105"
           onClick={checkout}
         >
           Checkout
         </button>
       </div>
       <button
-        className="text-indigo-500 py-4 text-sm font-medium transition hover:scale-105"
+        className="py-4 text-sm font-medium text-indigo-500 transition hover:scale-105"
         onClick={generatePaymentLink}
       >
         Create Payment Link
