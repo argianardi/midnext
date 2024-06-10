@@ -1,13 +1,25 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import { product } from "./libs/product";
-import Checkout from "./components/Checkout";
-import { useEffect } from "react";
+import Image from 'next/image';
+import { product } from './libs/product';
+import Checkout from './components/Checkout';
+import { useEffect } from 'react';
 
 export default function Home() {
   useEffect(() => {
-    // render midtrans snap token
+    const snapScript = 'https://app.sandbox.midtrans.com/snap/snap.js';
+    const clientKey = process.env.NEXT_PUBLIC_CLIENT_KEY;
+
+    const script = document.createElement('script');
+    script.src = snapScript;
+    script.setAttribute('data-client-key', clientKey);
+    script.async = true;
+
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
   }, []);
 
   return (
@@ -19,14 +31,14 @@ export default function Home() {
             alt="..."
             width={250}
             height={250}
-            className="w-full object-cover"
+            className="object-cover w-full"
           />
-          <div className="border border-gray-100 bg-white p-6">
+          <div className="p-6 bg-white border border-gray-100">
             <h3 className="mt-4 text-lg font-medium text-gray-900">
               {product.name}
             </h3>
             <p className="mt-1.5 text-sm text-gray-700">Rp {product.price}</p>
-            <p className="py-4 text-sm text-gray-700 text-justify">
+            <p className="py-4 text-sm text-justify text-gray-700">
               {product.description}
             </p>
             <Checkout />
